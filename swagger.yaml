@@ -1,10 +1,9 @@
-
-swagger: '2.0'
+swagger: "2.0"
 info:
   title: Bank Argent API documentation
   description: Contains all available API endpoints in this codebase
-  version: '1.0.0'
-  termsOfService: 'http://swagger.io/terms/'
+  version: "1.0.1"
+  termsOfService: "http://swagger.io/terms/"
 host: localhost:3001
 basePath: /api/v1
 schemes:
@@ -22,17 +21,17 @@ paths:
           description: Login Payload
           required: true
           schema:
-            $ref: '#/definitions/Login'
+            $ref: "#/definitions/Login"
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: Login Successfully
           schema:
-            $ref: '#/definitions/LoginResponse'
-        '400':
+            $ref: "#/definitions/LoginResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
   /user/signup:
     post:
@@ -46,17 +45,17 @@ paths:
           description: Signup Payload
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: "#/definitions/User"
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: Signup Successfully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
   /user/profile:
     post:
@@ -66,16 +65,14 @@ paths:
         - User Module
       summary: User Profile API
       description: API for fetching a user profile
-      #produces:
-       # - application/json
       responses:
-        '200':
+        "200":
           description: User profile retrieved successully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
     put:
       security:
@@ -90,146 +87,97 @@ paths:
           description: Update user profile attributes
           required: true
           schema:
-            $ref: '#/definitions/UserProfile'
+            $ref: "#/definitions/UserProfile"
       produces:
         - application/json
       responses:
-        '200':
-          description: User profile retrieved successully
-          schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
-definitions:
-  User:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-      firstName:
-        type: string
-        description: user first name
-      lastName:
-        type: string
-        description: user last name
-      userName:
-        type: string
-        description: user public name
-  Login:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-  ApiResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-      message:
-        type: string
-      body:
-        type: object
-        properties:
-          id:
-            type: string
-          email:
-            type: string
-  LoginResponse:
-    type: object
-    properties:
-      token:
-        type: string
-  UserProfile:
-    type: object
-    properties:
-      userName:
-        type: string
-
-        #---------------------------------New
-  /user/bankaccounts/{id}:
-    get:
-      security:
-        - Bearer: []
-      tags:
-        - User Module
-      summary: User Account API
-      description: API to get User accounts
-      parameters:
-        - in: path
-          name: id
-          description: Login playload
-          required: true
-          type: string
-      responses:
         "200":
           description: User profile retrieved successully
           schema:
-            $ref: "#/definitions/BankAccountResponse"
+            $ref: "#/definitions/ApiResponse"
         "400":
           description: Invalid Fields
         "500":
           description: Internal Server Error
-
-  /user/bankaccount/{id}/transactions/:
+  /accounts/:
     get:
-      security:
-        - Bearer: []
       tags:
         - User Module
-      summary: User Transaction API
-      description: API to get User transactions
-      parameters:
-        - in: path
-          name: id
-          description: Login payload
-          required: true
-          type: string
+      summary: Retrieve User Account Information
+      description: Retrieve information about user accounts.
       responses:
         "200":
-          description: User Transaction retrieved successfully
+          description: Successfully retrieved user accounts
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/TransactionResponse"
+            $ref: "#/definitions/UserAccount"
         "400":
-          description: Invalid Fields
+          description: Bad Request - Invalid Fields
+        "401":
+          description: Unauthorized - Authentication Required
+        "404":
+          description: Not Found - No user accounts found
         "500":
           description: Internal Server Error
-
-  /user/bankaccount/{id}/transactions/{id}:
+  /account/{accountId}/transactions/:
     get:
       security:
         - Bearer: []
       tags:
         - User Module
-      summary: User Transaction API
-      description: API to get User Transactions infos
+      summary: Retrieve Account Transactions
+      description: Retrieve transactions associated with a user account.
       parameters:
         - in: path
-          name: id
-          description: Login payload
-          required: true
+          name: accountId
+          description: The ID of the user account
           type: string
+          required: true
+          example: "123456"
       responses:
         "200":
-          description: User Transaction infos retrieved successfully
+          description: Successfully retrieved account transactions
           schema:
-            $ref: "#/definitions/TransactionDetailsResponse"
+            $ref: "#/definitions/AccountTransactions"
         "400":
-          description: Invalid Fields
+          description: Bad Request - Invalid Fields
+        "401":
+          description: Unauthorized - Authentication Required
+        "404":
+          description: Not Found - User account or transactions not found
+        "500":
+          description: Internal Server Error
+  /accounts/{accountId}/transactions/{transactionId}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: Retrieve Transaction Details
+      description: Retrieve details of a specific transaction.
+      parameters:
+        - in: path
+          name: accountId
+          description: The ID of the user account
+          type: string
+          required: true
+          example: "123456"
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          type: integer
+          required: true
+          example: 789
+      responses:
+        "200":
+          description: Successfully retrieved transaction details
+          schema:
+            $ref: "#/definitions/TransactionDetails"
+        "400":
+          description: Bad Request - Invalid Fields
+        "401":
+          description: Unauthorized - Authentication Required
+        "404":
+          description: Not Found - User account or transaction not found
         "500":
           description: Internal Server Error
     put:
@@ -237,29 +185,67 @@ definitions:
         - Bearer: []
       tags:
         - User Module
-      summary: User Transaction API
-      description: API to change User Transactions infos
+      summary: Update Transaction Details
+      description: Update details of a specific transaction.
       parameters:
         - in: path
-          name: id
-          description: Login payload
-          required: true
+          name: accountId
+          description: The ID of the user account
           type: string
+          required: true
+          example: "123456"
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          type: integer
+          required: true
+          example: 789
         - in: body
-          name: body
+          name: transaction
+          description: The updated transaction details
           required: true
           schema:
-            $ref: "#/definitions/Transactions"
+            $ref: "#/definitions/UpdatedTransaction"
       responses:
         "200":
-          description: User Transaction info have been successfully changed
-          schema:
-            $ref: "#/definitions/TransactionResponse"
+          description: Transaction details updated successfully
         "400":
-          description: Invalid Fields
+          description: Bad Request - Invalid Fields
+        "401":
+          description: Unauthorized - Authentication Required
+        "404":
+          description: Not Found - User account or transaction not found
         "500":
           description: Internal Server Error
-#----------------------------------------------
+    delete:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: Delete Transaction
+      description: Delete a specific transaction.
+      parameters:
+        - in: path
+          name: accountId
+          description: The ID of the user account
+          type: string
+          required: true
+          example: "123456"
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          type: integer
+          required: true
+          example: 789
+      responses:
+        "204":
+          description: Transaction deleted successfully
+        "401":
+          description: Unauthorized - Authentication Required
+        "404":
+          description: Not Found - User account or transaction not found
+        "500":
+          description: Internal Server Error
 
 securityDefinitions:
   Bearer:
@@ -271,37 +257,19 @@ definitions:
     properties:
       email:
         type: string
-        description: user email
+        description: The email address of the user
       password:
         type: string
-        description: user password
+        description: The password of the user
       firstName:
         type: string
-        description: user first name
+        description: The first name of the user
       lastName:
         type: string
-        description: user last name
+        description: The last name of the user
       userName:
         type: string
-        description: user public name
-  Login:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-  # ------------------------------
-  Transactions:
-    properties:
-      category:
-        type: string
-      note:
-        type: string
-
-  # -----------------------------
-
+        description: The public username of the user
   ApiResponse:
     type: object
     properties:
@@ -316,70 +284,45 @@ definitions:
             type: string
           email:
             type: string
-  LoginResponse:
+  UpdatedTransaction:
     type: object
     properties:
-      token:
+      category:
         type: string
-  UserProfile:
-    type: object
-    properties:
-      userName:
+        description: The category of the transaction
+      note:
         type: string
-  #--------------------------------------New
-  BankAccountResponse:
+        description: Additional notes for the transaction
+  UserAccount:
     type: object
     properties:
-      status:
+      account-title:
+        type: string
+      account-balance:
         type: integer
-      message:
+      account-description:
         type: string
-      body:
-        type: object
-        properties:
-          id:
-            type: string
-          amount:
-            type: number
-          transactionNumber:
-            type: number
-          balanceType:
-            type: string
-  TransactionResponse:
+  AccountTransactions:
     type: object
     properties:
-      status:
-        type: integer
-      message:
+      date:
         type: string
-      body:
-        type: object
-        properties:
-          id:
-            type: string
-          date:
-            type: string
-            format: date-time
-          description:
-            type: string
-          amount:
-            type: number
-          balance:
-            type: number
-  TransactionDetailsResponse:
+      description:
+        type: string
+      amount:
+        type: string
+      type:
+        type: string
+      category:
+        type: string
+      note:
+        type: string
+  TransactionDetails:
     type: object
     properties:
-      status:
-        type: integer
-      message:
+      date:
         type: string
-      body:
-        type: object
-        properties:
-          id:
-            type: string
-          category:
-            type: string
-          note:
-            type: string
-
+        description: The date of the transaction
+      description:
+        type: string
+        description: Description of the transaction

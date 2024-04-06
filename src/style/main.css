@@ -7,7 +7,7 @@ html {
 }
 
 #root {
-min-height: 100vh;
+  min-height: 100vh;
 }
 
 body {
@@ -88,7 +88,7 @@ body {
 }
 
 .hero {
-  background-image: url('../../public/img/bank-tree.jpeg');
+  background-image: url("../../public/img/bank-tree.jpeg");
   background-position: 0 -50px;
   background-size: cover;
   background-repeat: no-repeat;
@@ -193,7 +193,7 @@ body {
 }
 
 .sign-in-icon {
-  font-size: 1.50rem;
+  font-size: 1.5rem;
 }
 
 .error-message {
@@ -231,7 +231,7 @@ body {
 }
 
 .icon {
-font-size: 1.35em;
+  font-size: 1.35em;
 }
 
 .footer {
@@ -292,8 +292,8 @@ font-size: 1.35em;
 }
 
 dialog {
-  height: 45%;
-  width: 20%;
+  max-height: 80%;
+  max-width: 80%;
 }
 
 .modal-form {
@@ -306,7 +306,11 @@ dialog {
 
 .modal-background {
   padding: 15px;
-  height: 93%;
+  height: 90%;
+  width: 90%;
+  max-width: 400px; /* Ajustement pour les grands écrans */
+  margin: 0 auto; /* Centrage horizontal */
+  overflow-y: auto; /* Ajouter une barre de défilement si nécessaire */
 }
 
 .modal-input-wrapper {
@@ -320,12 +324,13 @@ dialog {
 .modal-input {
   padding: 10px;
   margin-top: 5px;
-  width: 55%;
+  width: 100%;
 }
 
 .modal-button {
   width: 150px !important;
 }
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -343,6 +348,26 @@ dialog {
   justify-content: center;
   margin-top: 20px;
   gap: 20px;
+}
+
+@media (max-width: 600px) {
+  dialog {
+    max-height: 90%;
+    max-width: 90%;
+  }
+
+  .modal-background {
+    width: 95%;
+    max-width: none;
+  }
+
+  .modal-input {
+    width: calc(100% - 20px);
+  }
+
+  .modal-button {
+    width: calc(100% - 20px) !important;
+  }
 }
 
 .header {
@@ -375,4 +400,3 @@ dialog {
     width: 200px;
   }
 }
-

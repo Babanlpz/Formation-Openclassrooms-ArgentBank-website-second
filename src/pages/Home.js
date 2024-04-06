@@ -10,32 +10,42 @@ import Navigation from "../components/Navigation";
 // Il est utilisé dans le routeur (Router) pour afficher la page d'accueil.
 // Il ne prend pas de paramètre.
 const Home = () => {
+  // Utilisation d'un tableau pour stocker les données des fonctionnalités
+  const featuresData = [
+    {
+      image: "./img/icon-chat.webp",
+      title: "You are our #1 priority",
+      description:
+        "Need to talk to a representative? You can get in touch through our 24/7 chat or through a phone call in less than 5 minutes.",
+    },
+    {
+      image: "./img/icon-money.webp",
+      title: "More savings means higher rates",
+      description:
+        "The more you save with us, the higher your interest rate will be!",
+    },
+    {
+      image: "./img/icon-security.webp",
+      title: "Security you can trust",
+      description:
+        "We use top of the line encryption to make sure your data and money is always safe.",
+    },
+  ];
+
   return (
     <div>
       <Navigation />
       <Hero />
+      {/* Utilisation de la méthode map pour rendre les fonctionnalités */}
       <section className="features">
-        <FeatureInfo
-          image={"./img/icon-chat.png"}
-          title={"You are our #1 priority"}
-          description={
-            "Need to talk to a representative? You can get in touch through our 24/7 chat or through a phone call in less than 5 minutes."
-          }
-        />
-        <FeatureInfo
-          image={"./img/icon-money.png"}
-          title={"More savings means higher rates"}
-          description={
-            "The more you save with us, the higher your interest rate will be!"
-          }
-        />
-        <FeatureInfo
-          image={"./img/icon-security.png"}
-          title={"Security you can trust"}
-          description={
-            "We use top of the line encryption to make sure your data and money is always safe."
-          }
-        />
+        {featuresData.map((feature, index) => (
+          <FeatureInfo
+            key={index} // Utilisation de l'index comme clé (amélioration possible si les données sont uniques)
+            image={feature.image}
+            title={feature.title}
+            description={feature.description}
+          />
+        ))}
       </section>
       <Footer />
     </div>

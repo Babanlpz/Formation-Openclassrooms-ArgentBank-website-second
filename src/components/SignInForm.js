@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import Button from "../components/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setToken, userLoginRequest } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
-
+import Button from "../components/Button";
+import { setToken, userLoginRequest } from "../features/userSlice";
 
 // Composant de formulaire de connexion
 // Ce composant représente le formulaire de connexion de l'application.
@@ -27,29 +26,22 @@ const SignInForm = () => {
 
     const formData = { email, password };
 
-
-    // Gestion de la soumission du formulaire de connexion
-    // Cette fonction est appelée lorsque l'utilisateur soumet le formulaire de connexion.
     try {
       const res = await dispatch(userLoginRequest(formData));
-      const resData = res.payload;
-      const token = resData.body.token; // récupération du token de la réponse de la requête d'authentification.
+      const { token } = res.payload.body; // Utilisation de la déstructuration pour extraire le token de la réponse de la requête d'authentification.
 
-      dispatch(setToken(token)); // mise à jour le store Redux avec le token
+      dispatch(setToken(token)); // Mise à jour du store Redux avec le token
 
-      // Si l'utilisateur a coché la case "Remember me", le token est stocké dans le localStorage.
+      // Stockage du token dans le localStorage si l'utilisateur a coché "Remember me", sinon, le token est stocké dans le store Redux.
       if (token && rememberMeisChecked) {
-        navigate("/user");
         localStorage.setItem("token", token);
-        // Sinon, le token est stocké dans le store Redux.
-      } else if (token && !rememberMeisChecked) {
-        navigate("/user");
       }
-      // Si la requête d'authentification échoue, un message d'erreur est affiché.
+
+      navigate("/user");
     } catch (error) {
+      // Affichage des messages d'erreur appropriés
       if (email === "" || password === "") {
         setError("Please fill in all the required fields.");
-      // Si l'adresse e-mail ou le mot de passe est incorrect, un message d'erreur est affiché.
       } else {
         setError("Email or password incorrect");
       }
@@ -57,19 +49,23 @@ const SignInForm = () => {
   };
 
   // Affichage du formulaire de connexion
-  // Ce composant affiche le formulaire de connexion de l'application.
   return (
     <section className="sign-in-content">
       <FontAwesomeIcon icon={faCircleUser} className="sign-in-icon" />
       <h1>Sign In</h1>
-      {error && <p className="error-message">{error}</p>}{" "}
-      <form>
+      {error && <p className="error-message">{error}</p>}
+      <form onSubmit={handleSubmit}>
+        {" "}
+        {/* Utilisation de onSubmit pour soumettre le formulaire */}
         <div className="input-wrapper">
           <label htmlFor="email">Email</label>
           <input
             type="text"
             id="email"
             name="email"
+            value={
+              email
+            } /* Utilisation de la valeur contrôlée pour le champ email */
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
@@ -79,6 +75,9 @@ const SignInForm = () => {
             type="password"
             id="password"
             name="password"
+            value={
+              password
+            } /* Utilisation de la valeur contrôlée pour le champ mot de passe */
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
@@ -87,13 +86,16 @@ const SignInForm = () => {
           <input
             type="checkbox"
             id="remember-me"
+            checked={
+              rememberMeisChecked
+            } /* Utilisation de checked pour gérer l'état de la case à cocher */
             onChange={() => setRememberMeisChecked(!rememberMeisChecked)}
           />
         </div>
         <Button
           title="Sign In"
           className={"sign-in-button"}
-          onClick={handleSubmit}
+          type="submit" /* Utilisation de type="submit" pour le bouton de soumission */
         />
       </form>
     </section>
