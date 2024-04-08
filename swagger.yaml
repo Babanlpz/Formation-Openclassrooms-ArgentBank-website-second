@@ -45,7 +45,9 @@ paths:
         "200":
           description: Successfully retrieved account transactions
           schema:
-            $ref: "#/definitions/AccountTransactions"
+            type: array
+            items:
+              $ref: "#/definitions/TransactionDetails"
         "400":
           description: Bad Request - Invalid Fields
         "401":
@@ -91,18 +93,28 @@ paths:
         - Bearer: []
       tags:
         - User Module
-      summary: Update Transaction Details
-      description: Update category and note of a specific transaction.
+      summary: Update Transaction Category
+      description: Update category of a specific transaction.
       parameters:
+        - in: path
+          name: accountId
+          description: The ID of the user account
+          type: string
+          required: true
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          type: integer
+          required: true
         - in: body
           name: transaction
-          description: The updated transaction details
+          description: The updated transaction category
           required: true
           schema:
-            $ref: "#/definitions/UpdatedTransaction"
+            $ref: "#/definitions/UpdatedTransactionCategory"
       responses:
         "200":
-          description: Transaction details updated successfully
+          description: Transaction category updated successfully
         "400":
           description: Bad Request - Invalid Fields
         "401":
@@ -116,11 +128,120 @@ paths:
         - Bearer: []
       tags:
         - User Module
-      summary: Delete Transaction
-      description: Method not allowed - Deleting transactions is not supported.
+      summary: Delete Transaction Category
+      description: Delete category of a specific transaction.
+      parameters:
+        - in: path
+          name: accountId
+          description: The ID of the user account
+          type: string
+          required: true
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          type: integer
+          required: true
       responses:
-        "405":
-          description: Method Not Allowed - Deleting transactions is not supported
+        "204":
+          description: Transaction category deleted successfully
+        "401":
+          description: Unauthorized - Authentication Required
+        "404":
+          description: Not Found - User account or transaction not found
+        "500":
+          description: Internal Server Error
+  /accounts/{accountId}/transactions/{transactionId}/note:
+    delete:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: Delete Transaction Note
+      description: Delete note of a specific transaction.
+      parameters:
+        - in: path
+          name: accountId
+          description: The ID of the user account
+          type: string
+          required: true
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          type: integer
+          required: true
+      responses:
+        "204":
+          description: Transaction note deleted successfully
+        "401":
+          description: Unauthorized - Authentication Required
+        "404":
+          description: Not Found - User account or transaction not found
+        "500":
+          description: Internal Server Error
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: Add Transaction Note
+      description: Add a note to a specific transaction.
+      parameters:
+        - in: path
+          name: accountId
+          description: The ID of the user account
+          type: string
+          required: true
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          type: integer
+          required: true
+        - in: body
+          name: transaction
+          description: The updated transaction note
+          required: true
+          schema:
+            $ref: "#/definitions/UpdatedTransactionNote"
+      responses:
+        "201":
+          description: Note added successfully
+        "400":
+          description: Bad Request - Invalid Fields
+        "401":
+          description: Unauthorized - Authentication Required
+        "404":
+          description: Not Found - User account or transaction not found
+        "500":
+          description: Internal Server Error
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: Update Transaction Note
+      description: Update note of a specific transaction.
+      parameters:
+        - in: path
+          name: accountId
+          description: The ID of the user account
+          type: string
+          required: true
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          type: integer
+          required: true
+        - in: body
+          name: transaction
+          description: The updated transaction note
+          required: true
+          schema:
+            $ref: "#/definitions/UpdatedTransactionNote"
+      responses:
+        "200":
+          description: Transaction note updated successfully
+        "400":
+          description: Bad Request - Invalid Fields
         "401":
           description: Unauthorized - Authentication Required
         "404":
@@ -164,7 +285,7 @@ definitions:
             type: string
           email:
             type: string
-  UpdatedTransaction:
+  UpdatedTransactionCategory:
     type: object
     properties:
       category:
@@ -174,6 +295,9 @@ definitions:
           - OtherCategory1
           - OtherCategory2
           # Add more categories as needed
+  UpdatedTransactionNote:
+    type: object
+    properties:
       note:
         type: string
         description: Additional notes for the transaction
